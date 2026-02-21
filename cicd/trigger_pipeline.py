@@ -21,8 +21,8 @@ import argparse
 from typing import Dict, Any
 
 # Pipeline Configuration
-PIPELINE_ID = "f94b89a8-8688-4a03-b285-e88727b7f403"
-PIPELINE_NAME = "Complete-MLOps-Pipeline"
+PIPELINE_ID = "fd42f730-389c-4775-a742-bbaab69fbb5a"
+PIPELINE_NAME = "Complete-MLOps-Pipeline-MouhamadouMoustaphaSow"
 
 
 class DatabricksPipelineClient:
