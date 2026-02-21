@@ -1,3 +1,31 @@
+# 🎓 Projet MLOps - Mouhamadou Moustapha Sow
+**Institution** : Institut Polytechnique de Saint Louis (IPSL)  
+**Cours** : Data Engineering, AI Engineering and MLOps  
+**Instructeur** : Dr. Mbaye Babacar Gueye  
+**Date** : 21 Février 2026  
+
+## 📋 Informations Étudiant
+- **Nom** : Mouhamadou Moustapha Sow
+- **Email** : sow.mouhamadou-moustapha2@ugb.edu.sn
+- **GitHub** : https://github.com/Moustap31415/taxi-mlops-ipsl
+- **Catalog Databricks** : taxi_mlops_prod
+- **Schema** : mouhamadou_moustapha_sow
+- **Pipeline ID** : fd42f730-389c-4775-a742-bbaab69fbb5a
+
+## ✅ Travaux réalisés
+- **Part 1** : Pipeline complet exécuté (9 tables créées)
+- **Part 2** : 3 nouvelles features ajoutées (is_rush_hour, trip_category, is_weekend)
+- **Part 3** : Modèle amélioré avec rush hour et trip category
+- **Part 4** : CI/CD GitHub Actions configuré
+
+## 📁 Documents
+- [Part 1 - Architecture](docs/Part1_Architecture_Summary.md)
+- [Part 2 - Features](docs/Part2_Feature_Documentation.md)
+- [Part 3 - Modèle](docs/Part3_Model_Improvement_Report.md)
+- [Part 4 - CI/CD](docs/Part4_CICD_Documentation.md)
+
+---
+
 # Complete MLOps Pipeline for Taxi Fare Prediction
 
 ## 🎓 Institut Polytechnique de Saint Louis (IPSL)
