@@ -16,7 +16,7 @@ def ml_model_training():
     security restrictions. This dataset provides the prepared training data.
     """
     # Read training data
-    spark.read.table("ml_training_data")
+    df = spark.read.table("ml_training_data")
     
     # Split into train and test
     train_df = df.filter("is_training = true")
@@ -73,11 +73,23 @@ def ml_model_training():
     # Coefficients derived from domain knowledge (simplified model)
     predictions = (
         test_encoded
+        .withColumn("time_morning", F.when(F.col("time_of_day") == "morning", 1.0).otherwise(0.0))
+        .withColumn("time_afternoon", F.when(F.col("time_of_day") == "afternoon", 1.0).otherwise(0.0))
+        .withColumn("time_evening", F.when(F.col("time_of_day") == "evening", 1.0).otherwise(0.0))
+        .withColumn("time_night", F.when(F.col("time_of_day") == "night", 1.0).otherwise(0.0))
+        .withColumn("payment_credit", F.when(F.col("payment_type") == 1, 1.0).otherwise(0.0))
+        .withColumn("payment_cash", F.when(F.col("payment_type") == 2, 1.0).otherwise(0.0))
+        .withColumn("payment_other", F.when(F.col("payment_type").isin([3, 4, 5]), 1.0).otherwise(0.0))
+        .withColumn("airport_pickup_flag", F.col("is_airport_pickup").cast("double"))
+        .withColumn("airport_dropoff_flag", F.col("is_airport_dropoff").cast("double"))
+        .withColumn("trip_distance_norm", F.least(F.col("trip_distance") / 50.0, F.lit(1.0)))
+        .withColumn("trip_duration_norm", F.least(F.col("trip_duration_minutes") / 120.0, F.lit(1.0)))
+        .withColumn("speed_norm", F.least(F.col("speed_mph") / 60.0, F.lit(1.0)))
         .withColumn(
             "predicted_total_amount",
             # Base fare
             F.lit(3.0) +
-            # Distance component (major factor)
+            # Distance component
             (F.col("trip_distance") * 2.5) +
             # Duration component
             (F.col("trip_duration_minutes") * 0.5) +
@@ -88,7 +100,11 @@ def ml_model_training():
             F.when(F.col("airport_pickup_flag") == 1, 5.0).otherwise(0.0) +
             F.when(F.col("airport_dropoff_flag") == 1, 5.0).otherwise(0.0) +
             # Passenger count
-            (F.col("passenger_count") * 0.5)
+            (F.col("passenger_count") * 0.5) +
+            # NOUVEAU: Rush hour surcharge (+2.0)
+            F.when(F.col("is_rush_hour") == True, 2.0).otherwise(0.0) +
+            # NOUVEAU: Long trip adjustment (+1.5 for long trips)
+            F.when(F.col("trip_category") == "long", 1.5).otherwise(0.0)
         )
     )
     
