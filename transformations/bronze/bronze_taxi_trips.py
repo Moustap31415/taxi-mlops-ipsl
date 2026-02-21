@@ -1,4 +1,5 @@
 from pyspark import pipelines as dp
+from pyspark.sql import functions as F
 
 @dp.table(
     comment="Raw taxi trip data ingested from cloud storage using Auto Loader"
@@ -6,11 +7,8 @@ from pyspark import pipelines as dp
 def bronze_taxi_trips():
     """
     Bronze layer: Raw taxi trip data ingestion
-    Reads yellow taxi trip data from volume using Auto Loader with automatic schema inference
+    Reads yellow taxi trip data directly from Unity Catalog table
     """
     return (
-        spark.readStream.format("cloudFiles")
-        .option("cloudFiles.format", "parquet")
-        .option("cloudFiles.inferColumnTypes", "true")
-        .load("/Volumes/taxi_mlops_prod/mouhamadou_moustapha_sow/yellowdata")
+        spark.readStream.table("taxi_mlops_prod.mouhamadou_moustapha_sow.yellowdata")
     )
