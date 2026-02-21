@@ -20,11 +20,11 @@ Code Push → GitHub Actions → Validate Syntax → Trigger Pipeline Databricks
 
 ## 2. Secrets GitHub configurés
 
-| Secret | Description | Valeur |
+| Secret | Description | Statut |
 |--------|-------------|--------|
-| `DATABRICKS_PROD_HOST` | URL du workspace Databricks | https://dbc-7ca4beb1-ec32.cloud.databricks.com |
-| `DATABRICKS_PROD_TOKEN` | Token d'authentification | Désactivé (restriction IPSL) |
-| `PIPELINE_ID` | ID du pipeline DLT | fd42f730-389c-4775-a742-bbaab69fbb5a |
+| `DATABRICKS_PROD_HOST` | URL du workspace Databricks | ✅ Configuré |
+| `DATABRICKS_PROD_TOKEN` | Token d'authentification | ✅ Configuré |
+| `PIPELINE_ID` | ID du pipeline DLT | ✅ Configuré |
 
 ---
 
@@ -38,10 +38,13 @@ Code Push → GitHub Actions → Validate Syntax → Trigger Pipeline Databricks
 - Installation de Python 3.10 et pyspark
 - Validation syntaxique de tous les fichiers `.py`
 
-### Job 2 : trigger-pipeline ❌
-**Déclencheur** : Push sur main ou develop  
-**Statut** : Échec dû à la désactivation des tokens dans le workspace IPSL  
-**Note** : Le pipeline est déclenché manuellement via l'interface Databricks
+### Job 2 : trigger-pipeline ✅
+**Déclencheur** : Push sur main, develop ou feature/MouhamadouMoustaphaSow  
+**Durée** : ~2 minutes 49 secondes  
+**Actions** :
+- Déclenchement automatique du pipeline Databricks
+- Attente de la complétion
+- Rapport du statut final
 
 ### Job 3 : dry-run-on-pr ⏭️
 **Déclencheur** : Pull Request vers main uniquement  
@@ -107,18 +110,20 @@ python cicd/trigger_pipeline.py --action start-and-wait
 | Authentication failed | Token invalide ou expiré | Renouveler le token Databricks |
 | Pipeline not found | PIPELINE_ID incorrect | Vérifier l'ID dans l'URL Databricks |
 | Syntax validation failed | Erreur Python dans le code | Corriger l'erreur signalée dans les logs |
-| Tokens disabled | Restriction administrative IPSL | Déclencher le pipeline manuellement |
+| 409 Conflict | Pipeline déjà en cours | Attendre la fin ou arrêter le pipeline |
 | Timeout | Pipeline trop long | Augmenter le timeout dans trigger_pipeline.py |
 
 ---
 
 ## 8. Historique des exécutions
 
-| Run | Commit | Statut | Durée |
-|-----|--------|--------|-------|
-| #12 | fix: mise a jour Pipeline ID | ✅ Validate / ❌ Trigger | 49s |
-| #9 | fix: correction ml_model_registry | ✅ Validate / ❌ Trigger | 49s |
-| #8 | fix: suppression colonnes inexistantes | ✅ Validate / ❌ Trigger | 46s |
-| #7 | fix: adaptation ml_training_data | ✅ Validate / ❌ Trigger | 49s |
-| #6 | fix: adaptation gold layer | ✅ Validate / ❌ Trigger | 50s |
-| #5 | fix: adaptation silver layer | ✅ Validate / ❌ Trigger | 44s |
+| Run | Commit | Validate | Trigger | Durée |
+|-----|--------|----------|---------|-------|
+| #17 | ci: test trigger pipeline | ✅ | ✅ | 2m 49s |
+| #16 | ci: test trigger pipeline | ✅ | ❌ (409 Conflict) | 48s |
+| #12 | fix: mise a jour Pipeline ID | ✅ | ❌ (token désactivé) | 49s |
+| #9 | fix: correction ml_model_registry | ✅ | ❌ (token désactivé) | 49s |
+| #8 | fix: suppression colonnes inexistantes | ✅ | ❌ (token désactivé) | 46s |
+| #7 | fix: adaptation ml_training_data | ✅ | ❌ (token désactivé) | 49s |
+| #6 | fix: adaptation gold layer | ✅ | ❌ (token désactivé) | 50s |
+| #5 | fix: adaptation silver layer | ✅ | ❌ (token désactivé) | 44s |
